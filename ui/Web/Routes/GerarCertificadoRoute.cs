@@ -23,7 +23,7 @@ namespace servico_certificado.Web.Routes
         public void Register()
         {
            
-            _app.MapPost("/gerar-certificado", [Authentication] (HttpContext context, [FromBody] DadosCertificado dados) =>
+            _app.MapPost("/gerar-certificado", (HttpContext context, [FromBody] DadosCertificado dados) =>
             {
                 var pdfBytes = _certificado.EmitirCertificado(dados.Nome, dados.Curso, dados.CPF);
 
@@ -34,14 +34,16 @@ namespace servico_certificado.Web.Routes
                     Cpf = dados.CPF
                 };
 
-                _certificado.SalvarDadosCertificado(dadosCertificado);
+                _certificado.SalvarDadosCertificado(dadosCertificado).Wait();
 
                 context.Response.ContentType = "application/pdf";
                 context.Response.Headers.Add("Content-Disposition", "attachment; filename=Certificado.pdf");
                 return context.Response.Body.WriteAsync(pdfBytes, 0, pdfBytes.Length);
             })
             .WithName("PostGerarCertificado")
-            .WithOpenApi();
+            .WithOpenApi().AddEndpointFilter<AuthenticationAttribute>();
+            
         }
+
     }
 }
