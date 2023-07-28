@@ -40,8 +40,8 @@ namespace servico_certificado.Web.Routes
                 context.Response.Headers.Add("Content-Disposition", "attachment; filename=Certificado.pdf");
                 return context.Response.Body.WriteAsync(pdfBytes, 0, pdfBytes.Length);
             })
-            .WithName("PostGerarCertificado")
-            .WithOpenApi().AddEndpointFilter<AuthenticationAttribute>();
+            .WithName("PostGerarCertificado");
+            //.WithOpenApi().AddEndpointFilter<AuthenticationAttribute>();
             
         }
 
